@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  # Java Spring Boot backend
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Appsmith frontend (self-hosted)
+  appsmith:
+    image: appsmith/appsmith-ce
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./frontend/appsmith/stacks:/appsmith-stacks
+    depends_on:
+      - backend
+    restart: unless-stopped
