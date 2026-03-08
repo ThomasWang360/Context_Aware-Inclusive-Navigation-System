@@ -2,75 +2,72 @@ package com.group2.navigation.model;
 
 /**
  * User preferences for route calculation.
- * These determine how edge weights are calculated in the A* algorithm.
+ *
+ * Each weight is 0-10 where 0 = "don't care" and 10 = "maximum importance".
+ * The A* edge-cost formula scales penalties proportionally to these weights.
  */
 public class UserPreferences {
-    
-    private boolean wheelchairAccessible;
-    private boolean avoidHighCrime;
-    private boolean preferLitStreets;
-    private boolean avoidConstruction;
-    private int timeOfDay; // 0-23, used for night mode calculations
-    private double maxDistanceToHospital; // in meters, 0 = don't care
-    
-    // TODO: Add more preference fields as needed
-    
-    // Constructors
+
+    private double wheelchairWeight;     // 0-10, avoid non-accessible paths
+    private double crimeWeight;          // 0-10, avoid high-crime areas
+    private double lightingWeight;       // 0-10, prefer lit streets
+    private double constructionWeight;   // 0-10, avoid construction zones
+    private int timeOfDay;               // 0-23, affects lighting penalty strength
+    private double maxDistanceToHospital; // meters, 0 = don't care
+
     public UserPreferences() {
-        // Default preferences
-        this.wheelchairAccessible = false;
-        this.avoidHighCrime = false;
-        this.preferLitStreets = false;
-        this.avoidConstruction = false;
+        this.wheelchairWeight = 0;
+        this.crimeWeight = 0;
+        this.lightingWeight = 0;
+        this.constructionWeight = 0;
         this.timeOfDay = 12;
         this.maxDistanceToHospital = 0;
     }
-    
-    // Getters and Setters
-    public boolean isWheelchairAccessible() {
-        return wheelchairAccessible;
+
+    public double getWheelchairWeight() {
+        return wheelchairWeight;
     }
-    
-    public void setWheelchairAccessible(boolean wheelchairAccessible) {
-        this.wheelchairAccessible = wheelchairAccessible;
+
+    public void setWheelchairWeight(double wheelchairWeight) {
+        this.wheelchairWeight = wheelchairWeight;
     }
-    
-    public boolean isAvoidHighCrime() {
-        return avoidHighCrime;
+
+    public double getCrimeWeight() {
+        return crimeWeight;
     }
-    
-    public void setAvoidHighCrime(boolean avoidHighCrime) {
-        this.avoidHighCrime = avoidHighCrime;
+
+    public void setCrimeWeight(double crimeWeight) {
+        this.crimeWeight = crimeWeight;
     }
-    
-    public boolean isPreferLitStreets() {
-        return preferLitStreets;
+
+    public double getLightingWeight() {
+        return lightingWeight;
     }
-    
-    public void setPreferLitStreets(boolean preferLitStreets) {
-        this.preferLitStreets = preferLitStreets;
+
+    public void setLightingWeight(double lightingWeight) {
+        this.lightingWeight = lightingWeight;
     }
-    
-    public boolean isAvoidConstruction() {
-        return avoidConstruction;
+
+    public double getConstructionWeight() {
+        return constructionWeight;
     }
-    
-    public void setAvoidConstruction(boolean avoidConstruction) {
-        this.avoidConstruction = avoidConstruction;
+
+    public void setConstructionWeight(double constructionWeight) {
+        this.constructionWeight = constructionWeight;
     }
-    
+
     public int getTimeOfDay() {
         return timeOfDay;
     }
-    
+
     public void setTimeOfDay(int timeOfDay) {
         this.timeOfDay = timeOfDay;
     }
-    
+
     public double getMaxDistanceToHospital() {
         return maxDistanceToHospital;
     }
-    
+
     public void setMaxDistanceToHospital(double maxDistanceToHospital) {
         this.maxDistanceToHospital = maxDistanceToHospital;
     }

@@ -26,6 +26,9 @@ public class RouteService {
     @Autowired
     private ContextDataRepository contextRepo;
 
+    @Autowired
+    private GeocodingService geocodingService;
+
     private AStarRouter router;
 
     @PostConstruct
@@ -37,9 +40,31 @@ public class RouteService {
 
     /**
      * Calculate a route based on the request.
+     * If addresses are provided instead of coordinates, they are geocoded first.
      */
     public RouteResponse calculateRoute(RouteRequest request) {
-        // Find route using A* with context-aware edge weighting
+        // Geocode start address if provided
+        if (request.getStartAddress() != null && !request.getStartAddress().isBlank()) {
+            double[] start = geocodingService.geocode(request.getStartAddress());
+            if (start == null) {
+                return RouteResponse.error(
+                        "Could not find start address: " + request.getStartAddress());
+            }
+            request.setStartLat(start[0]);
+            request.setStartLng(start[1]);
+        }
+
+        // Geocode end address if provided
+        if (request.getEndAddress() != null && !request.getEndAddress().isBlank()) {
+            double[] end = geocodingService.geocode(request.getEndAddress());
+            if (end == null) {
+                return RouteResponse.error(
+                        "Could not find end address: " + request.getEndAddress());
+            }
+            request.setEndLat(end[0]);
+            request.setEndLng(end[1]);
+        }
+
         List<Node> path = router.findRoute(
             request.getStartLat(),
             request.getStartLng(),

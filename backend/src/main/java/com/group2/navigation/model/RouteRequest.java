@@ -9,6 +9,8 @@ public class RouteRequest {
     private double startLng;
     private double endLat;
     private double endLng;
+    private String startAddress; // optional: geocoded to startLat/startLng if provided
+    private String endAddress;   // optional: geocoded to endLat/endLng if provided
     private UserPreferences preferences;
     
     // Constructors
@@ -53,6 +55,22 @@ public class RouteRequest {
     
     public void setEndLng(double endLng) {
         this.endLng = endLng;
+    }
+    
+    public String getStartAddress() {
+        return startAddress;
+    }
+    
+    public void setStartAddress(String startAddress) {
+        this.startAddress = startAddress;
+    }
+    
+    public String getEndAddress() {
+        return endAddress;
+    }
+    
+    public void setEndAddress(String endAddress) {
+        this.endAddress = endAddress;
     }
     
     public UserPreferences getPreferences() {
