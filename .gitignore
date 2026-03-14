@@ -64,10 +64,10 @@ Thumbs.db
 logs/
 
 # Data files (too big for git)
-data/raw/*.pbf
-data/raw/*.osm
-data/raw/*.csv
-data/processed/*.json
+# data/raw/*.pbf
+# data/raw/*.osm
+# data/raw/*.csv
+# data/processed/*.json
 
 # H2 Database files
 *.db

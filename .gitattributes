@@ -1,0 +1,6 @@
+data/raw/ontario-260218.osm.pbf filter=lfs diff=lfs merge=lfs -text
+data/raw/Road[[:space:]]Reconstruction[[:space:]]Program[[:space:]]-[[:space:]]4326.csv filter=lfs diff=lfs merge=lfs -text
+data/raw/cycling-network[[:space:]]-[[:space:]]4326.csv filter=lfs diff=lfs merge=lfs -text
+data/raw/Health[[:space:]]Services[[:space:]]-[[:space:]]4326.csv filter=lfs diff=lfs merge=lfs -text
+data/raw/Major_Crime_Indicators_Open_Data_-3805566126367379926.csv filter=lfs diff=lfs merge=lfs -text
+data/raw/Poles[[:space:]]-[[:space:]]4326.csv filter=lfs diff=lfs merge=lfs -text
