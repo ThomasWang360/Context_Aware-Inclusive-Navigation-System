@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -197,4 +198,28 @@ public class AuthController {
         if (name == null) return null;
         return name.replaceAll("<[^>]*>", "").trim();
     }
+
+    @GetMapping("/users")
+    public ResponseEntity<Object> getUsers(
+        @RequestParam(required = false) String query,
+        @RequestParam(required = false) @Min(value = 1, message = "excludeUserId must be a positive number") Long excludeUserId) {
+
+    List<Map<String, Object>> users = authService.searchUsers(query, excludeUserId)
+            .stream()
+            .map(user -> {
+                Map<String, Object> u = new LinkedHashMap<>();
+                u.put("userId", user.getId());
+                u.put("username", user.getUsername());
+                u.put("displayName", user.getDisplayName());
+                u.put("location", user.getLocation());
+                return u;
+            })
+            .toList();
+
+    return ResponseEntity.ok(Map.of(
+            "success", true,
+            "users", users,
+            "count", users.size()
+    ));
+}
 }
