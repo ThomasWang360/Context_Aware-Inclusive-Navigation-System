@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
 
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -130,4 +131,22 @@ public class AuthService {
         String t = raw.trim();
         return t.isEmpty() ? null : t;
     }
+
+    @Transactional(readOnly = true)
+    public List<User> searchUsers(String query, Long excludeUserId) {
+    List<User> users;
+
+    if (query == null || query.isBlank()) {
+        users = userRepo.findAllByOrderByDisplayNameAsc();
+    } else {
+        String q = query.trim();
+        users = userRepo
+                .findByUsernameContainingIgnoreCaseOrDisplayNameContainingIgnoreCaseOrderByDisplayNameAsc(q, q);
+    }
+
+    return users.stream()
+            .filter(user -> excludeUserId == null || !user.getId().equals(excludeUserId))
+            .toList();
+}
+
 }
