@@ -1,7 +1,5 @@
 version: '3.8'
-
 services:
-  # Java Spring Boot backend
   backend:
     build: ./backend
     ports:
@@ -16,14 +14,14 @@ services:
       timeout: 10s
       retries: 3
 
-  # Appsmith frontend (self-hosted)
   appsmith:
-    image: appsmith/appsmith-ce
+    image: index.docker.io/appsmith/appsmith-ce   
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - ./frontend/appsmith/stacks:/appsmith-stacks
     depends_on:
-      - backend
+      backend:                                     
+        condition: service_healthy
     restart: unless-stopped

@@ -1,6 +1,7 @@
 package com.group2.navigation.controller;
 
 import com.group2.navigation.algorithm.Graph;
+import com.group2.navigation.dto.CreateHealthServiceRequest;
 import com.group2.navigation.model.*;
 import com.group2.navigation.repository.ConstructionProjectRepository;
 import com.group2.navigation.repository.HealthServiceRepository;
@@ -9,6 +10,7 @@ import com.group2.navigation.service.RouteService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -183,5 +185,35 @@ public class RouteController {
                 "center", Map.of("lat", lat, "lng", lng),
                 "radiusMeters", radius
         ));
+    }
+
+    /**
+     * Add a health service POI.
+     *
+     * POST /api/pois/health
+     */
+    @PostMapping("/pois/health")
+    public ResponseEntity<HealthService> createHealthPoi(@Valid @RequestBody CreateHealthServiceRequest body) {
+        HealthService h = new HealthService(
+                body.getAgencyName().trim(),
+                body.getAddress() != null ? body.getAddress().trim() : null,
+                body.getLatitude(),
+                body.getLongitude(),
+                body.getAccessibility() != null ? body.getAccessibility().trim() : null,
+                body.getPhone() != null ? body.getPhone().trim() : null);
+        HealthService saved = healthServiceRepo.save(h);
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+    }
+
+    /**
+     * Delete a health service by id.
+     *
+     * DELETE /api/pois/health/{id}
+     */
+    @DeleteMapping("/pois/health/{id}")
+    public ResponseEntity<Void> deleteHealthPoi(
+            @PathVariable @Min(value = 1, message = "id must be a positive number") Long id) {
+        healthServiceRepo.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }

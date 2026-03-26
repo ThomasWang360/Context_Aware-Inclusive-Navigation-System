@@ -2,12 +2,15 @@ package com.group2.navigation.service;
 
 import com.group2.navigation.model.User;
 import com.group2.navigation.model.UserPreferences;
+import com.group2.navigation.repository.MessageRepository;
 import com.group2.navigation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * Handles user signup and login.
@@ -16,8 +19,14 @@ import java.util.Optional;
 @Service
 public class AuthService {
 
+    private static final Pattern EMAIL_FORMAT = Pattern.compile(
+            "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private MessageRepository messageRepo;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -26,12 +35,15 @@ public class AuthService {
      *
      * @throws IllegalArgumentException if the username is already taken
      */
-    public User signup(String username, String password, String displayName) {
+    public User signup(String username, String password, String displayName, String location) {
         if (userRepo.existsByUsername(username)) {
             throw new IllegalArgumentException("Username already taken");
         }
 
         User user = new User(username, encoder.encode(password), displayName);
+        if (location != null && !location.isBlank()) {
+            user.setLocation(location.trim());
+        }
         return userRepo.save(user);
     }
 
@@ -64,5 +76,58 @@ public class AuthService {
     /** Get a user by ID. */
     public Optional<User> getUser(Long userId) {
         return userRepo.findById(userId);
+    }
+
+    /**
+     * Update email and/or password. At least one non-blank value must be provided.
+     */
+    @Transactional
+    public User updateCredentials(Long userId, String emailRaw, String passwordRaw) {
+        String email = normalizeOptional(emailRaw);
+        String password = passwordRaw == null || passwordRaw.isBlank() ? null : passwordRaw;
+
+        if (email == null && password == null) {
+            throw new IllegalArgumentException("At least one of email or password must be provided");
+        }
+
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (email != null) {
+            if (!EMAIL_FORMAT.matcher(email).matches()) {
+                throw new IllegalArgumentException("Invalid email format");
+            }
+            Optional<User> existing = userRepo.findByEmailIgnoreCase(email);
+            if (existing.isPresent() && !existing.get().getId().equals(userId)) {
+                throw new IllegalArgumentException("Email is already in use");
+            }
+            user.setEmail(email);
+        }
+
+        if (password != null) {
+            user.setPassword(encoder.encode(password));
+        }
+
+        return userRepo.save(user);
+    }
+
+    /**
+     * Delete the user and all messages where they are sender or receiver.
+     */
+    @Transactional
+    public void deleteUser(Long userId) {
+        if (!userRepo.existsById(userId)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        messageRepo.deleteAllInvolvingUser(userId);
+        userRepo.deleteById(userId);
+    }
+
+    private static String normalizeOptional(String raw) {
+        if (raw == null) {
+            return null;
+        }
+        String t = raw.trim();
+        return t.isEmpty() ? null : t;
     }
 }

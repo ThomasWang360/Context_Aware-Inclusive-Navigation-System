@@ -1,0 +1,28 @@
+<!--
+  Appsmith Custom Widget: Signup Form (HTML panel)
+  Paste this into the HTML section of your Custom Widget.
+-->
+<div class="signup-form">
+  <h1 class="signup-title">Feiz Map</h1>
+  <p class="signup-subtitle">Create account</p>
+
+  <form id="signupForm" class="signup-fields">
+    <label class="field-label">Username</label>
+    <input type="text" id="username" class="field-input" placeholder="Enter username" required />
+
+    <label class="field-label">Password</label>
+    <input type="password" id="password" class="field-input" placeholder="Enter password" required />
+
+    <label class="field-label">Display name</label>
+    <input type="text" id="displayName" class="field-input" placeholder="Your name" />
+
+    <p id="errorMsg" class="error-msg"></p>
+
+    <button type="submit" class="submit-btn">Sign up</button>
+  </form>
+
+  <p class="login-link">
+    Already have an account?
+    <a href="#" id="loginLink">Log in</a>
+  </p>
+</div>

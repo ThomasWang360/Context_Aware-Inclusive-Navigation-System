@@ -19,6 +19,10 @@ public class SignupRequest {
     @Pattern(regexp = "^[\\p{L}\\p{N} _.'-]*$", message = "Display name contains invalid characters")
     private String displayName;
 
+    @Size(max = 200, message = "Location must not exceed 200 characters")
+    @Pattern(regexp = "^[\\p{L}\\p{N} ,.'-]*$", message = "Location contains invalid characters")
+    private String location;
+
     public SignupRequest() {}
 
     public String getUsername() { return username; }
@@ -29,4 +33,7 @@ public class SignupRequest {
 
     public String getDisplayName() { return displayName; }
     public void setDisplayName(String displayName) { this.displayName = displayName; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 }
