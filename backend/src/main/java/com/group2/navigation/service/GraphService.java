@@ -69,6 +69,9 @@ public class GraphService {
     }
 
     public void loadFromOSM(String filePath) {
-        this.graph = Graph.loadFromOSM(filePath);
+        Graph newGraph = Graph.loadFromOSM(filePath);
+        if (newGraph != null && newGraph.size() > 0) {
+            this.graph = newGraph;
+        }
     }
 }

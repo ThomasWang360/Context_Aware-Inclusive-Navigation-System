@@ -1,7 +1,10 @@
 package com.group2.navigation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A saved route belonging to a user.
@@ -52,6 +55,15 @@ public class SavedRoute {
 
     @Column(nullable = false)
     private LocalDateTime createdAt;
+
+    @JsonIgnore
+    @ManyToMany
+    @JoinTable(
+        name = "shared_routes",
+        joinColumns = @JoinColumn(name = "route_id"),
+        inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> sharedWith = new HashSet<>();
 
     public SavedRoute() {}
 
@@ -110,4 +122,7 @@ public class SavedRoute {
 
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public Set<User> getSharedWith() { return sharedWith; }
+    public void setSharedWith(Set<User> sharedWith) { this.sharedWith = sharedWith; }
 }

@@ -3,7 +3,9 @@ package com.group2.navigation.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Registered user account.
@@ -51,6 +53,10 @@ public class User {
     @JsonIgnore
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<SavedRoute> savedRoutes = new ArrayList<>();
+
+    @JsonIgnore
+    @ManyToMany(mappedBy = "sharedWith", fetch = FetchType.LAZY)
+    private Set<SavedRoute> sharedRoutes = new HashSet<>();
 
     // --- saved preferences (same fields as UserPreferences) ---
 
@@ -148,4 +154,7 @@ public class User {
 
     public List<SavedRoute> getSavedRoutes() { return savedRoutes; }
     public void setSavedRoutes(List<SavedRoute> savedRoutes) { this.savedRoutes = savedRoutes; }
+
+    public Set<SavedRoute> getSharedRoutes() { return sharedRoutes; }
+    public void setSharedRoutes(Set<SavedRoute> sharedRoutes) { this.sharedRoutes = sharedRoutes; }
 }

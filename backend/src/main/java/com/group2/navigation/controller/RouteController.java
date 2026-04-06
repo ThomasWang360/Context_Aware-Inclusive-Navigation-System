@@ -4,6 +4,7 @@ import com.group2.navigation.algorithm.Graph;
 import com.group2.navigation.dto.CreateHealthServiceRequest;
 import com.group2.navigation.model.*;
 import com.group2.navigation.repository.ConstructionProjectRepository;
+import com.group2.navigation.repository.CrimeIncidentRepository;
 import com.group2.navigation.repository.HealthServiceRepository;
 import com.group2.navigation.service.GeocodingService;
 import com.group2.navigation.service.RouteService;
@@ -34,6 +35,9 @@ public class RouteController {
 
     @Autowired
     private ConstructionProjectRepository constructionRepo;
+
+    @Autowired
+    private CrimeIncidentRepository crimeRepo;
 
     /**
      * Health check endpoint.
@@ -240,5 +244,25 @@ public class RouteController {
             @PathVariable @Min(value = 1, message = "id must be a positive number") Long id) {
         healthServiceRepo.deleteById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Get crime heatmap data for a bounding box. Returns lat/lng pairs
+     * for crime incidents since 2021 within the given bounds.
+     *
+     * GET /api/heatmap/crime?minLat=...&maxLat=...&minLng=...&maxLng=...
+     */
+    @GetMapping("/heatmap/crime")
+    public ResponseEntity<Map<String, Object>> getCrimeHeatmap(
+            @RequestParam @DecimalMin("-90") @DecimalMax("90") double minLat,
+            @RequestParam @DecimalMin("-90") @DecimalMax("90") double maxLat,
+            @RequestParam @DecimalMin("-180") @DecimalMax("180") double minLng,
+            @RequestParam @DecimalMin("-180") @DecimalMax("180") double maxLng) {
+        List<Object[]> rows = crimeRepo.findHeatmapPoints(minLat, maxLat, minLng, maxLng, 2021);
+        List<double[]> points = new ArrayList<>();
+        for (Object[] row : rows) {
+            points.add(new double[]{(double) row[0], (double) row[1]});
+        }
+        return ResponseEntity.ok(Map.of("success", true, "points", points));
     }
 }

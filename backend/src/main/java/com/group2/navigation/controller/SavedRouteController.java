@@ -90,4 +90,59 @@ public class SavedRouteController {
                     "success", false, "message", e.getMessage()));
         }
     }
+
+    /**
+     * Share a saved route with another user.
+     *
+     * POST /api/saved-routes/{routeId}/share?userId={ownerId}&targetUserId={targetUserId}
+     */
+    @PostMapping("/{routeId}/share")
+    public ResponseEntity<Object> share(
+            @PathVariable @Min(1) Long routeId,
+            @RequestParam @Min(1) Long userId,
+            @RequestParam @Min(1) Long targetUserId) {
+        try {
+            Map<String, Object> result = savedRouteService.shareRoute(routeId, userId, targetUserId);
+            return ResponseEntity.ok(Map.of("success", true, "route", result));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false, "message", e.getMessage()));
+        }
+    }
+
+    /**
+     * Unshare a saved route from a user.
+     *
+     * DELETE /api/saved-routes/{routeId}/share?userId={ownerId}&targetUserId={targetUserId}
+     */
+    @DeleteMapping("/{routeId}/share")
+    public ResponseEntity<Object> unshare(
+            @PathVariable @Min(1) Long routeId,
+            @RequestParam @Min(1) Long userId,
+            @RequestParam @Min(1) Long targetUserId) {
+        try {
+            Map<String, Object> result = savedRouteService.unshareRoute(routeId, userId, targetUserId);
+            return ResponseEntity.ok(Map.of("success", true, "route", result));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false, "message", e.getMessage()));
+        }
+    }
+
+    /**
+     * Get all routes shared with a user.
+     *
+     * GET /api/saved-routes/shared/{userId}
+     */
+    @GetMapping("/shared/{userId}")
+    public ResponseEntity<Object> getSharedWithUser(
+            @PathVariable @Min(1) Long userId) {
+        try {
+            List<Map<String, Object>> routes = savedRouteService.findSharedWithUser(userId);
+            return ResponseEntity.ok(Map.of("success", true, "routes", routes));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of(
+                    "success", false, "message", e.getMessage()));
+        }
+    }
 }

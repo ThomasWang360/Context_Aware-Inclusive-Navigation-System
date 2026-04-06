@@ -109,6 +109,51 @@ public class SavedRouteService {
         m.put("timeOfDay", r.getTimeOfDay());
         m.put("maxDistanceToHospital", r.getMaxDistanceToHospital());
         m.put("createdAt", r.getCreatedAt());
+        m.put("sharedWith", r.getSharedWith().stream()
+                .map(u -> Map.of("id", u.getId(), "username", u.getUsername()))
+                .collect(Collectors.toList()));
         return m;
+    }
+
+    @Transactional
+    public Map<String, Object> shareRoute(Long routeId, Long ownerId, Long targetUserId) {
+        SavedRoute route = routeRepo.findById(routeId)
+                .orElseThrow(() -> new IllegalArgumentException("Saved route not found"));
+
+        if (!route.getUser().getId().equals(ownerId)) {
+            throw new IllegalArgumentException("Route does not belong to this user");
+        }
+
+        if (ownerId.equals(targetUserId)) {
+            throw new IllegalArgumentException("Cannot share a route with yourself");
+        }
+
+        User target = userRepo.findById(targetUserId)
+                .orElseThrow(() -> new IllegalArgumentException("Target user not found"));
+
+        route.getSharedWith().add(target);
+        return toMap(routeRepo.save(route));
+    }
+
+    @Transactional
+    public Map<String, Object> unshareRoute(Long routeId, Long ownerId, Long targetUserId) {
+        SavedRoute route = routeRepo.findById(routeId)
+                .orElseThrow(() -> new IllegalArgumentException("Saved route not found"));
+
+        if (!route.getUser().getId().equals(ownerId)) {
+            throw new IllegalArgumentException("Route does not belong to this user");
+        }
+
+        route.getSharedWith().removeIf(u -> u.getId().equals(targetUserId));
+        return toMap(routeRepo.save(route));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Map<String, Object>> findSharedWithUser(Long userId) {
+        if (!userRepo.existsById(userId)) {
+            throw new IllegalArgumentException("User not found");
+        }
+        return routeRepo.findSharedWithUser(userId)
+                .stream().map(SavedRouteService::toMap).collect(Collectors.toList());
     }
 }

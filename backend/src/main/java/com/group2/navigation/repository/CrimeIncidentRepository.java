@@ -38,4 +38,14 @@ public interface CrimeIncidentRepository extends JpaRepository<CrimeIncident, Lo
                                   @Param("minLng") double minLng,
                                   @Param("maxLng") double maxLng,
                                   @Param("sinceYear") int sinceYear);
+
+    @Query("SELECT c.latitude, c.longitude FROM CrimeIncident c WHERE " +
+           "c.latitude BETWEEN :minLat AND :maxLat AND " +
+           "c.longitude BETWEEN :minLng AND :maxLng AND " +
+           "c.occYear >= :sinceYear")
+    java.util.List<Object[]> findHeatmapPoints(@Param("minLat") double minLat,
+                                                @Param("maxLat") double maxLat,
+                                                @Param("minLng") double minLng,
+                                                @Param("maxLng") double maxLng,
+                                                @Param("sinceYear") int sinceYear);
 }

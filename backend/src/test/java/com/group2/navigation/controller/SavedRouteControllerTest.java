@@ -251,4 +251,143 @@ class SavedRouteControllerTest {
 
         org.assertj.core.api.Assertions.assertThat(routeRepo.countByUserId(userId)).isEqualTo(0);
     }
+
+    // ---- SHARE ----
+
+    @Test
+    void share_validRequest_returns200() throws Exception {
+        String createResult = mvc.perform(post("/api/saved-routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(routeJson(userId, "Shareable")))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+
+        Long routeId = com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
+                .readTree(createResult).get("id").asLong();
+
+        User target = new User("sharetarget", "hashed", "Target");
+        Long targetId = userRepo.save(target).getId();
+
+        mvc.perform(post("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", userId.toString())
+                .param("targetUserId", targetId.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.success").value(true))
+            .andExpect(jsonPath("$.route.sharedWith", hasSize(1)));
+    }
+
+    @Test
+    void share_withSelf_returns400() throws Exception {
+        String createResult = mvc.perform(post("/api/saved-routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(routeJson(userId, "SelfShare")))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+
+        Long routeId = com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
+                .readTree(createResult).get("id").asLong();
+
+        mvc.perform(post("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", userId.toString())
+                .param("targetUserId", userId.toString()))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString("yourself")));
+    }
+
+    @Test
+    void share_wrongOwner_returns400() throws Exception {
+        String createResult = mvc.perform(post("/api/saved-routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(routeJson(userId, "NotYours")))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+
+        Long routeId = com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
+                .readTree(createResult).get("id").asLong();
+
+        User other = new User("shareother", "hashed", "Other");
+        Long otherId = userRepo.save(other).getId();
+
+        User target = new User("sharetarget2", "hashed", "Target2");
+        Long targetId = userRepo.save(target).getId();
+
+        mvc.perform(post("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", otherId.toString())
+                .param("targetUserId", targetId.toString()))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.message", containsString("does not belong")));
+    }
+
+    // ---- UNSHARE ----
+
+    @Test
+    void unshare_validRequest_returns200() throws Exception {
+        String createResult = mvc.perform(post("/api/saved-routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(routeJson(userId, "ToUnshare")))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+
+        Long routeId = com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
+                .readTree(createResult).get("id").asLong();
+
+        User target = new User("unsharetgt", "hashed", "Target");
+        Long targetId = userRepo.save(target).getId();
+
+        // Share first
+        mvc.perform(post("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", userId.toString())
+                .param("targetUserId", targetId.toString()))
+            .andExpect(status().isOk());
+
+        // Then unshare
+        mvc.perform(delete("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", userId.toString())
+                .param("targetUserId", targetId.toString()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.route.sharedWith", hasSize(0)));
+    }
+
+    // ---- GET SHARED ----
+
+    @Test
+    void getSharedWithUser_returnsSharedRoutes() throws Exception {
+        String createResult = mvc.perform(post("/api/saved-routes")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(routeJson(userId, "SharedRoute")))
+            .andExpect(status().isCreated())
+            .andReturn().getResponse().getContentAsString();
+
+        Long routeId = com.fasterxml.jackson.databind.json.JsonMapper.builder().build()
+                .readTree(createResult).get("id").asLong();
+
+        User target = new User("getshared", "hashed", "Target");
+        Long targetId = userRepo.save(target).getId();
+
+        // Share
+        mvc.perform(post("/api/saved-routes/{routeId}/share", routeId)
+                .param("userId", userId.toString())
+                .param("targetUserId", targetId.toString()))
+            .andExpect(status().isOk());
+
+        // Get shared routes for the target
+        mvc.perform(get("/api/saved-routes/shared/{userId}", targetId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.routes", hasSize(1)))
+            .andExpect(jsonPath("$.routes[0].name").value("SharedRoute"));
+    }
+
+    @Test
+    void getSharedWithUser_noShares_returnsEmpty() throws Exception {
+        mvc.perform(get("/api/saved-routes/shared/{userId}", userId))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.routes", hasSize(0)));
+    }
+
+    @Test
+    void getSharedWithUser_unknownUser_returns400() throws Exception {
+        mvc.perform(get("/api/saved-routes/shared/{userId}", 99999L))
+            .andExpect(status().isBadRequest())
+            .andExpect(jsonPath("$.success").value(false));
+    }
 }
