@@ -19,13 +19,13 @@ We're building this for the Greater Toronto Area using open data from the city.
 | Name | Role | Email |
 |------|------|-------|
 | Arshia Feizmohammady | Backend Lead, Algorithm Design | arshia.feizmohammady@mail.utoronto.ca |
-| Thomas (Jigao) Wang | Backend & Integration Lead | jigao.wang@mail.utoronto.ca |
+| Thomas (Jigao) Wang | Backend & Integration Co-Lead | jigao.wang@mail.utoronto.ca |
 | Andrew Yin | Backend, Algorithm Design | realandrew.yin@mail.utoronto.ca |
 | Simon Zhu | Backend, Algorithm | simon.zhu@mail.utoronto.ca |
 | Hamad Almheiri | Frontend Lead | h.almheiri@mail.utoronto.ca |
 | Dooyeon (Dunny) Yeom | Frontend, Project Manager | dooyeon.yeom@mail.utoronto.ca |
 | Ivan Musuba | Frontend | ivan.musuba@mail.utoronto.ca |
-| Maria Chzhen | Frontend, Algorithm Design | maria.chzhen@mail.utoronto.ca |
+| Maria Chzhen | Backend & Integration Co-Lead, Frontend, Algorithm Design | maria.chzhen@mail.utoronto.ca |
 
 ## Tech Stack
 
