@@ -1,6 +1,9 @@
 package com.group2.navigation.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Registered user account.
@@ -34,6 +37,20 @@ public class User {
 
     @Column(length = 200)
     private String location;
+
+    // --- relationships ---
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "sender", fetch = FetchType.LAZY)
+    private List<Message> sentMessages = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "receiver", fetch = FetchType.LAZY)
+    private List<Message> receivedMessages = new ArrayList<>();
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavedRoute> savedRoutes = new ArrayList<>();
 
     // --- saved preferences (same fields as UserPreferences) ---
 
@@ -122,4 +139,13 @@ public class User {
 
     public double getMaxDistanceToHospital() { return maxDistanceToHospital; }
     public void setMaxDistanceToHospital(double v) { this.maxDistanceToHospital = v; }
+
+    public List<Message> getSentMessages() { return sentMessages; }
+    public void setSentMessages(List<Message> sentMessages) { this.sentMessages = sentMessages; }
+
+    public List<Message> getReceivedMessages() { return receivedMessages; }
+    public void setReceivedMessages(List<Message> receivedMessages) { this.receivedMessages = receivedMessages; }
+
+    public List<SavedRoute> getSavedRoutes() { return savedRoutes; }
+    public void setSavedRoutes(List<SavedRoute> savedRoutes) { this.savedRoutes = savedRoutes; }
 }

@@ -206,6 +206,31 @@ public class RouteController {
     }
 
     /**
+     * Update a health service POI.
+     *
+     * PUT /api/pois/health/{id}
+     */
+    @PutMapping("/pois/health/{id}")
+    public ResponseEntity<Object> updateHealthPoi(
+            @PathVariable @Min(value = 1, message = "id must be a positive number") Long id,
+            @Valid @RequestBody CreateHealthServiceRequest body) {
+        return healthServiceRepo.findById(id)
+                .map(h -> {
+                    h.setAgencyName(body.getAgencyName().trim());
+                    h.setAddress(body.getAddress() != null ? body.getAddress().trim() : null);
+                    h.setLatitude(body.getLatitude());
+                    h.setLongitude(body.getLongitude());
+                    h.setAccessibility(body.getAccessibility() != null ? body.getAccessibility().trim() : null);
+                    h.setPhone(body.getPhone() != null ? body.getPhone().trim() : null);
+                    HealthService saved2 = healthServiceRepo.save(h);
+                    return ResponseEntity.ok((Object) saved2);
+                })
+                .orElse(ResponseEntity.badRequest().body(Map.of(
+                        "success", false,
+                        "message", "Health service not found")));
+    }
+
+    /**
      * Delete a health service by id.
      *
      * DELETE /api/pois/health/{id}

@@ -3,6 +3,7 @@ package com.group2.navigation.service;
 import com.group2.navigation.model.User;
 import com.group2.navigation.model.UserPreferences;
 import com.group2.navigation.repository.MessageRepository;
+import com.group2.navigation.repository.SavedRouteRepository;
 import com.group2.navigation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -28,6 +29,9 @@ public class AuthService {
 
     @Autowired
     private MessageRepository messageRepo;
+
+    @Autowired
+    private SavedRouteRepository savedRouteRepo;
 
     private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -121,6 +125,7 @@ public class AuthService {
             throw new IllegalArgumentException("User not found");
         }
         messageRepo.deleteAllInvolvingUser(userId);
+        savedRouteRepo.deleteAllByUserId(userId);
         userRepo.deleteById(userId);
     }
 
