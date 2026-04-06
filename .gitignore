@@ -76,6 +76,7 @@ logs/
 
 # Appsmith
 frontend/appsmith/stacks/
+ignorepls.json
 
 # Docker
 *.pid
