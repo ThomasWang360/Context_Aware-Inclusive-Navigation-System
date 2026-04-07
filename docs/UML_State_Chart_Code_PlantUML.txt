@@ -1,0 +1,50 @@
+' Author: Thomas (Jigao) Wang and fellow members of the MIE350 group
+' =========================================================
+' UML State Chart for User Interaction Flow in NavSafe
+' =========================================================
+
+@startuml
+title UML State Chart - User Interaction Flow
+top to bottom direction
+hide empty description
+
+skinparam shadowing false
+skinparam roundcorner 20
+skinparam defaultTextAlignment center
+
+skinparam state {
+  BackgroundColor #D9D9D9
+  BorderColor #666666
+  FontColor black
+}
+
+state "User" as User {
+  [*] --> Registration : open app
+
+  state "Registration" as Registration
+  state "Logging In" as LoggingIn
+  state "Navigation" as Navigation
+  state "Messaging" as Messaging
+  state "Change Settings" as ChangeSettings
+
+  Registration -[hidden]down-> LoggingIn
+  LoggingIn -[hidden]down-> Navigation
+  Messaging -[hidden]right-> ChangeSettings
+  Navigation -[hidden]down-> Messaging
+
+  Registration --> LoggingIn : click "Already have an account"
+  Registration --> Navigation : <b>when</b> [registration successful]
+
+  LoggingIn --> Navigation : <b>when</b> [login successful]
+
+  Navigation --> Messaging : open messages
+  Navigation --> ChangeSettings : open settings
+
+  Messaging --> Navigation : open navigation
+  Messaging --> ChangeSettings : open settings
+
+  ChangeSettings --> Navigation : open navigation
+  ChangeSettings --> Messaging : open messages
+  ChangeSettings --> [*] : logout / delete account
+}
+@enduml
