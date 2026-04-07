@@ -1,0 +1,109 @@
+classDiagram
+    class ROAD_SEGMENT {
+        - id: Long
+        - osmWayId: Long
+        - startLat: Double
+        - startLng: Double
+        - endLat: Double
+        - endLng: Double
+        - distance: Double
+        - highwayType: String
+        - surfaceType: String
+        - wheelchairAccessible: Boolean
+        - hasSidewalk: Boolean
+        - isBikeLane: Boolean
+        - isLit: Boolean
+        - crimeScore: Double
+        - hasConstruction: Boolean
+        + getId() Long
+        + setId(id: Long) void
+        + getOsmWayId() Long
+        + getDistance() Double
+        + getHighwayType() String
+        + getSurfaceType() String
+        + isWheelchairAccessible() Boolean
+        + hasSidewalk() Boolean
+        + isBikeLane() Boolean
+        + isLit() Boolean
+        + getCrimeScore() Double
+        + hasConstruction() Boolean
+    }
+
+    class WHEELCHAIR_ACCESSIBILITY {
+        - id: Long
+        - latitude: Double
+        - longitude: Double
+        - featureType: String
+        - hasCurbCut: Boolean
+        - hasRamp: Boolean
+        - slopeGrade: Double
+        - surfaceCondition: String
+        - reportedAt: DateTime
+        + getId() Long
+        + setId(id: Long) void
+        + getLatitude() Double
+        + getLongitude() Double
+        + getFeatureType() String
+        + hasCurbCut() Boolean
+        + hasRamp() Boolean
+        + getSlopeGrade() Double
+        + getSurfaceCondition() String
+        + getReportedAt() DateTime
+    }
+
+    class BIKE_LANE {
+        - id: Long
+        - osmWayId: Long
+        - laneType: String
+        - startLat: Double
+        - startLng: Double
+        - endLat: Double
+        - endLng: Double
+        - isProtected: Boolean
+        - surfaceType: String
+        + getId() Long
+        + setId(id: Long) void
+        + getOsmWayId() Long
+        + getLaneType() String
+        + isProtected() Boolean
+        + getSurfaceType() String
+    }
+
+    class NOISE_ZONE {
+        - id: Long
+        - latitude: Double
+        - longitude: Double
+        - radius: Double
+        - noiseSource: String
+        - noiseLevel: Int
+        - activeFrom: DateTime
+        - activeUntil: DateTime
+        + getId() Long
+        + setId(id: Long) void
+        + getLatitude() Double
+        + getLongitude() Double
+        + getRadius() Double
+        + getNoiseSource() String
+        + getNoiseLevel() Int
+        + getActiveFrom() DateTime
+        + getActiveUntil() DateTime
+    }
+
+   class DATA_SOURCE {
+        - id: Long
+        - sourceName: String
+        - sourceUrl: String
+        - dataType: String
+        - lastFetched: DateTime
+        - nextScheduledFetch: DateTime
+
+        + getId() Long
+        + setId(id: Long) void
+        + getSourceName() String
+        + getSourceUrl() String
+        + getDataType() String
+        + getLastFetched() DateTime
+        + getNextScheduledFetch() DateTime
+        + fetch() void
+        + scheduleFetch(nextFetch: DateTime) void
+    }
