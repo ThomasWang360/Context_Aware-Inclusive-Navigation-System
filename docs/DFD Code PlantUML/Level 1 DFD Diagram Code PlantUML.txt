@@ -1,0 +1,161 @@
+' Author: Thomas (Jigao) Wang and fellow members of the MIE350 group
+
+' =========================================================
+' Level 1 DFD – Process 1: User Login
+' =========================================================
+@startuml
+title Level 1 DFD – Process 1: User Login
+left to right direction
+
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+
+rectangle "1.1\nReceive Login\nCredentials" as P11
+rectangle "1.2\nValidate\nCredentials" as P12
+rectangle "1.3\nGrant User\nSession Access" as P13
+
+database "D1\nUser Info Datastore" as D1
+
+User --> P11 : Username and password
+P11 --> P12 : Login credentials
+D1 --> P12 : User account record
+P12 --> P13 : Validated credentials
+P13 --> User : User session access
+
+@enduml
+
+' =========================================================
+' Level 1 DFD – Process 2: User Registration
+' =========================================================
+@startuml
+title Level 1 DFD – Process 2: User Registration
+left to right direction
+
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+
+rectangle "2.1\nReceive Registration\nInformation" as P21
+rectangle "2.2\nCreate New\nUser Record" as P22
+rectangle "2.3\nCreate Session and\nConfirm Registration" as P23
+
+database "D1\nUser Info Datastore" as D1
+
+User --> P21 : User Registration information
+P21 --> P22 : Registration information
+P22 --> D1 : New user account record
+P22 --> P23 : New account details
+P23 --> User : Registration confirmation
+P23 --> User : User session access
+
+@enduml
+
+
+' =========================================================
+' Level 1 DFD – Process 3: Route Search and Navigation
+' =========================================================
+@startuml
+title Level 1 DFD – Process 3: Route Search and Navigation
+left to right direction
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+database "D1\nUser Info Datastore" as D1
+database "D2\nMap Context Datastore" as D2
+
+rectangle "3.1\nReceive Route\nRequest" as P31
+rectangle "3.2\nRetrieve User\nPreferences and Filters" as P32
+rectangle "3.3\nRetrieve Contextual\nRoute Data" as P33
+rectangle "3.4\nGenerate Filtered Route\nand Visualization" as P34
+
+User --> P31 : Route request
+P31 --> P32 : Route request
+D1 --> P32 : User preferences and context filters
+P32 --> P34 : Route request with filters
+D2 --> P33 : Contextual and route data
+P33 --> P34 : Contextual and route data
+P34 --> User : Route visualization
+@enduml
+
+' =========================================================
+' Level 1 DFD – Process 4: Update Profile Information
+' =========================================================
+@startuml
+title Level 1 DFD – Process 4: Update Profile Information
+left to right direction
+
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+
+rectangle "4.1\nRetrieve Existing\nProfile Information" as P41
+rectangle "4.2\nDisplay Editable\nProfile Fields" as P42
+rectangle "4.3\nReceive Updated\nProfile Information" as P43
+rectangle "4.4\nStore Updated Profile\nand Confirm Update" as P44
+
+database "D1\nUser Info Datastore" as D1
+
+User --> P41 : Profile update request
+D1 --> P41 : Existing profile information
+P41 --> P42 : Existing profile information
+P42 --> User : Editable profile fields
+User --> P43 : Updated profile information
+P43 --> P44 : Updated profile information
+P44 --> D1 : Updated user profile record
+P44 --> User : Update confirmation
+
+@enduml
+
+' =========================================================
+' Level 1 DFD – Process 5: Send Message
+' =========================================================
+@startuml
+title Level 1 DFD – Process 5: Send Message
+left to right direction
+
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+
+rectangle "5.1\nIdentify Current\nUser" as P51
+rectangle "5.2\nRetrieve Existing\nConversations" as P52
+rectangle "5.3\nRetrieve Associated\nUser Information" as P53
+rectangle "5.4\nDisplay Conversation\nList" as P54
+rectangle "5.5\nIdentify the\nSelected ID" as P55
+rectangle "5.6\nRetrieve and Display\nMessage History" as P56
+rectangle "5.7\nStore New Message" as P57
+rectangle "5.8\nUpdate Message\nThread" as P58
+
+database "D1\nUser Info Datastore" as D1
+database "D3\nMessage Datastore" as D3
+
+D1 --> P51 : Current user ID
+P51 --> P52 : Current user ID
+D3 --> P52 : Existing conversation records
+P52 --> P53 : Conversation list
+D1 --> P53 : Associated user information
+P53 --> P54 : Conversation list with current user info
+P54 --> User : Displayed conversation list
+
+User --> P55 : Selected user ID/\nconversation ID
+P55 --> P56 : Selected conversation identifier
+D3 --> P56 : Previous message records
+P56 --> User : Displayed previous messages
+
+User --> P57 : New message content
+P57 --> D3 : New message record
+D3 --> P58: Updated conversation record
+P58 --> User : Updated conversation thread
+
+@enduml
