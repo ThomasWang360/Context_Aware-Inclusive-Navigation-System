@@ -1,0 +1,37 @@
+' Author: Thomas (Jigao) Wang and fellow members of the MIE350 group
+' =========================================================
+' Context Diagram of the Context-Aware Inclusive Navigation System
+' =========================================================
+
+@startuml
+title Context Diagram – Context-Aware Inclusive Navigation System
+left to right direction
+
+skinparam shadowing false
+skinparam roundcorner 0
+skinparam defaultTextAlignment center
+
+rectangle "User" as User
+rectangle "0\nContext-Aware Inclusive\nNavigation System" as System0
+
+User --> System0 : Username and password
+System0 --> User : User session access
+
+User --> System0 : User registration information
+System0 --> User : Registration confirmation
+
+User --> System0 : Route request
+System0 --> User : Route visualization
+
+User --> System0 : Profile update request
+User --> System0 : Updated profile information
+System0 --> User : Editable profile fields
+System0 --> User : Update confirmation
+
+User --> System0 : Selected user ID /\nconversation ID
+User --> System0 : New message content
+System0 --> User : Displayed conversation list
+System0 --> User : Displayed previous messages
+System0 --> User : Updated conversation thread
+
+@enduml
