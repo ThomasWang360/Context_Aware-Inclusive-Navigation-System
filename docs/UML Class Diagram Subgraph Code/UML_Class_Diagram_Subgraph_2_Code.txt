@@ -1,0 +1,111 @@
+classDiagram
+    class USER {
+        - id: Long
+        - email: String
+        - passwordHash: String
+        - name: String
+        - createdAt: DateTime
+        - lastLogin: DateTime
+        - lastLogout: DateTime
+        + User(email: String, name: String, password: String) void
+        + getId() Long
+        + setId(id: Long) void
+        + getEmail() String
+        + setEmail(email: String) void
+        + getName() String
+        + setName(name: String) void
+        + setPassword(password: String) void
+        + login() DateTime
+        + logout() DateTime
+        + getCreatedAt() DateTime
+        + getLastLogin() DateTime
+        + getLastLogout() DateTime
+        + hashPassword(password: String) String
+        + verifyPassword(password: String) Boolean
+    }
+
+    
+
+    class FORUM_POST {
+        - id: Long
+        - userId: Long
+        - title: String
+        - content: Text
+        - category: String
+        - relatedLat: Double
+        - relatedLng: Double
+        - upvotes: Int
+        - createdAt: DateTime
+        - updatedAt: DateTime
+    
+        + ForumPost(userId: Long, title: String, content: Text, category: String, relatedLat: Double, relatedLng: Double) void
+        + getId() Long
+        + setId(id: Long) void
+        + getUserId() Long
+        + getTitle() String
+        + setTitle(title: String) void
+        + getContent() Text
+        + setContent(content: Text) void
+        + getCategory() String
+        + setCategory(category: String) void
+        + getUpvotes() Int
+        + addUpvote() Int
+        + getCreatedAt() DateTime
+        + getUpdatedAt() DateTime
+    }
+
+    class FORUM_COMMENT {
+        - id: Long
+        - postId: Long
+        - userId: Long
+        - content: Text
+        - upvotes: Int
+        - createdAt: DateTime
+        - updatedAt: DateTime
+
+        + ForumComment(postId: Long, userId: Long, content: Text) void
+        + getId() Long
+        + setId(id: Long) void
+        + getPostId() Long
+        + getUserId() Long
+        + getContent() Text
+        + setContent(content: Text) void
+        + getUpvotes() Int
+        + addUpvote() Int
+        + getCreatedAt() DateTime
+        + getUpdatedAt() DateTime
+    }
+
+    class ACCESSIBILITY_REPORT {
+        - id: Long
+        - userId: Long
+        - latitude: Double
+        - longitude: Double
+        - reportType: String
+        - description: String
+        - status: String
+        - reportedAt: DateTime
+        - resolvedAt: DateTime
+
+        + AccessibilityReport(userId: Long, latitude: Double, longitude: Double, reportType: String) void
+        + getId() Long
+        + setId(id: Long) void
+        + getUserId() Long
+        + getLatitude() Double
+        + getLongitude() Double
+        + getReportType() String
+        + setReportType(reportType: String) void
+        + getDescription() String
+        + setDescription(description: String) void
+        + getStatus() String
+        + setStatus(status: String) void
+        + resolve(resolvedAt: DateTime) String
+        + getReportedAt() DateTime
+        + getResolvedAt() DateTime
+       
+    }
+
+    USER "1" --> "0..*" FORUM_POST : creates
+    USER "1" --> "0..*" FORUM_COMMENT : writes
+    USER "1" --> "0..*" ACCESSIBILITY_REPORT : submits
+    FORUM_POST "1" --> "0..*" FORUM_COMMENT : has

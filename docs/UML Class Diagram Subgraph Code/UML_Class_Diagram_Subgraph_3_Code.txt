@@ -1,0 +1,105 @@
+classDiagram
+class CRIME_ZONE {
+        - id: Long
+        - latitude: Double
+        - longitude: Double
+        - gridSize: Double
+        - crimeScore: Double
+        - crimeType: String
+        - incidentCount: Int
+        - periodStart: DateTime
+        - periodEnd: DateTime
+        - lastUpdated: DateTime
+        + getId() Long
+        + setId(id: Long) void
+        + getLatitude() Double
+        + getLongitude() Double
+        + getCrimeScore() Double
+        + getCrimeType() String
+        + getIncidentCount() Int
+        + getPeriodStart() DateTime
+        + getPeriodEnd() DateTime
+        + getLastUpdated() DateTime
+    }
+
+    class STREET_LIGHT {
+        - id: Long
+        - latitude: Double
+        - longitude: Double
+        - coverageRadius: Double
+        - lightType: String
+        - isOperational: Boolean
+        - installedDate: DateTime
+        + getId() Long
+        + setId(id: Long) void
+        + getLatitude() Double
+        + getLongitude() Double
+        + getCoverageRadius() Double
+        + getLightType() String
+        + isOperational() Boolean
+        + getInstalledDate() DateTime
+    }
+
+    class CONSTRUCTION {
+        - id: Long
+        - latitude: Double
+        - longitude: Double
+        - radius: Double
+        - description: String
+        - restrictionType: String
+        - startDate: Date
+        - endDate: Date
+        - isActive: Boolean
+        - lastUpdated: DateTime
+        + getId() Long
+        + setId(id: Long) void
+        + getLatitude() Double
+        + getLongitude() Double
+        + getRadius() Double
+        + getDescription() String
+        + getRestrictionType() String
+        + getStartDate() Date
+        + getEndDate() Date
+        + isActive() Boolean
+        + getLastUpdated() DateTime
+    }
+
+    class HOSPITAL {
+        - id: Long
+        - name: String
+        - latitude: Double
+        - longitude: Double
+        - address: String
+        - phoneNumber: String
+        - hasEmergency: Boolean
+        - isOpen24Hours: Boolean
+        + getId() Long
+        + setId(id: Long) void
+        + getName() String
+        + getLatitude() Double
+        + getLongitude() Double
+        + getAddress() String
+        + getPhoneNumber() String
+        + hasEmergency() Boolean
+        + isOpen24Hours() Boolean
+    }
+
+    class POI {
+        - id: Long
+        - name: String
+        - type: String
+        - latitude: Double
+        - longitude: Double
+        - address: String
+        - openingHours: String
+        - wheelchairAccessible: Boolean
+        + getId() Long
+        + setId(id: Long) void
+        + getName() String
+        + getType() String
+        + getLatitude() Double
+        + getLongitude() Double
+        + getAddress() String
+        + getOpeningHours() String
+        + isWheelchairAccessible() Boolean
+    }
