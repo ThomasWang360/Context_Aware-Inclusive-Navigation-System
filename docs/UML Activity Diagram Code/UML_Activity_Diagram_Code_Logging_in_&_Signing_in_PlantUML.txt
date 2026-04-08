@@ -1,0 +1,46 @@
+' Author: Thomas (Jigao) Wang and fellow members of the MIE350 group
+' =========================================================
+' UML Activity Diagram - Logging in and Signing in NavSafe
+' =========================================================
+@startuml
+title UML Activity Diagram - Logging in and Signing in
+
+skinparam shadowing false
+skinparam defaultTextAlignment center
+
+start
+
+:Open application;
+:Show Registration page;
+
+if (Already have an account?) then (Yes)
+  :Go to login page;
+  :Enter username and password;
+  :Submit login credentials;
+
+  if (Credentials valid?) then (Yes)
+    :Enter Navigation state;
+  else (No)
+    :Display login error message;
+    stop
+  endif
+
+else (No)
+  :Enter username, password,\nlocation, and display name;
+  :Submit registration information;
+
+  if (Username available?) then (Yes)
+    :Create new user record;
+    :Store account information;
+    :Create user session;
+    :Enter Navigation state;
+  else (No)
+    :Display registration error message;
+    stop
+  endif
+endif
+
+:Default Navigation Page;
+stop
+
+@enduml

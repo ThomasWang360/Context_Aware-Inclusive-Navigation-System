@@ -1,0 +1,73 @@
+' Author: Thomas (Jigao) Wang and fellow members of the MIE350 group
+' =========================================================
+' UML Activity Diagram - Main System Flow in NavSafe
+' =========================================================
+
+@startuml
+title Activity Diagram – Main System Flow
+
+start
+
+:Successful login / registration;
+:Enter Navigation state;
+:Open map and navigation page;
+
+repeat
+  :Choose a system function;
+
+  if (Choose Route Search and Navigation?) then (Yes)
+    :Enter Route Search and Navigation state;
+    :Enter current location and destination;
+
+    fork
+      :Retrieve user preferences and filters;
+    fork again
+      :Retrieve contextual map data;
+    end fork
+
+    :Generate filtered route;
+
+    if (Route found?) then (Yes)
+      :Display route visualization;
+    else (No)
+      :Display no valid route found message;
+    endif
+
+  elseif (Choose Send Message?) then (Yes)
+    :Enter Messaging state;
+    :Open message board;
+    :Retrieve conversation list;
+    :Display conversation list;
+    :Select conversation;
+    :Retrieve previous messages;
+    :Display previous messages;
+
+    if (Send a new message?) then (Yes)
+      :Enter new message;
+      :Store new message record;
+      :Display updated conversation thread;
+    else (No)
+      :View conversation only;
+    endif
+
+ 
+
+  else (Choose Change Settings) 
+    :Enter Change Settings state;
+    :Open settings page;
+    :Display editable profile fields;
+
+    if (Update profile information?) then (Yes)
+      :Enter updated profile information;
+      :Store updated profile information;
+      :Display update confirmation;
+    endif
+
+  endif
+
+repeat while (Continue using system?) is (Yes)
+
+:Log out of system \n / Delete Account;
+stop
+
+@enduml
